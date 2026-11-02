@@ -1,0 +1,6 @@
+step,stage,users,step_conv_pct,cumulative_conv_pct
+1,Visit,60000,,100.0
+2,Product view,43256,72.09,72.09
+3,Add to cart,15034,34.76,25.06
+4,Checkout,8975,59.7,14.96
+5,Purchase,4829,53.81,8.05

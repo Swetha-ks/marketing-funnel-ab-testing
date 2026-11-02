@@ -1,0 +1,12 @@
+table,check,count
+users,raw rows,60250
+users,duplicate user_id rows,250
+users,NULL device,400
+users,city_tier = 'unknown',150
+users,clean rows,60000
+orders,raw rows,4949
+orders,duplicate order_id rows,120
+orders,negative order value,40
+orders,"outliers > 20,000 INR",15
+orders,clean rows,4777
+funnel,users with purchase but no checkout (logic error),0

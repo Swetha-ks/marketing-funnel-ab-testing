@@ -1,0 +1,5 @@
+device,visitors,view_rate_pct,view_to_cart_pct,cart_to_checkout_pct,checkout_to_buy_pct,overall_conv_pct
+Mobile,40478,70.41,33.02,57.57,53.61,7.17
+Desktop,16194,76.07,38.96,64.14,54.48,10.36
+Tablet,2931,72.98,33.71,57.14,51.21,7.2
+Unknown,397,75.06,34.9,65.38,54.41,9.32
