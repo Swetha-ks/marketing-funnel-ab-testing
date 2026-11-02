@@ -20,10 +20,6 @@ if not os.path.exists("outputs/funnel.csv"):
         os.system("python src/generate_data.py")
         os.system("python src/analysis.py")
 
-# 🛠️ SIDEBAR FILTER FOR RECRUITERS
-st.sidebar.header("🎛️ Live Recruitment Demo Controls")
-st.sidebar.markdown("Test the interaction layers by modifying the filters below:")
-
 # Safe load for data files
 @st.cache_data
 def load_funnel_data():
@@ -36,35 +32,24 @@ def load_channel_data():
 df_funnel = load_funnel_data()
 df_channel = load_channel_data()
 
-# Device filter option
-if not df_funnel.empty and 'device' in df_funnel.columns:
-    devices = ['All Devices'] + list(df_funnel['device'].unique())
-    selected_device = st.sidebar.selectbox("Filter Metrics by Device Type:", devices)
-else:
-    selected_device = 'All Devices'
-
-st.sidebar.success("💡 Tip: Hover over any chart element to see hidden underlying statistical values!")
-
 # LAYOUT: MAIN ANALYTICS TILES
 col1, col2 = st.columns(2)
 
 with col1:
     st.subheader("🛒 Interactive Conversion Funnel")
     if not df_funnel.empty:
-        # Dynamically filter data framework if device selected
-        if selected_device != 'All Devices':
-            plot_funnel = df_funnel[df_funnel['device'] == selected_device]
-        else:
-            plot_funnel = df_funnel.groupby('stage_name', as_index=False).sum(numeric_only=True)
-            
+        # Automatically find the column names even if they are 'stage', 'stage_name', 'users', or 'user_count'
+        y_col = df_funnel.columns[0] # Usually the first column is the text stage name
+        x_col = df_funnel.columns[1] # Usually the second column is the numeric count
+        
         fig_funnel = px.bar(
-            plot_funnel, 
-            x='user_count', 
-            y='stage_name', 
+            df_funnel, 
+            x=x_col, 
+            y=y_col, 
             orientation='h',
-            labels={'user_count': 'Active Shoppers', 'stage_name': 'Funnel Stage'},
-            color='user_count',
-            color_continuous_scale='Purples' # Matches Swetha's Lavender/Purple Aesthetic!
+            labels={x_col: 'Active Shoppers', y_col: 'Funnel Stage'},
+            color=x_col,
+            color_continuous_scale='Purples' # Matches Swetha's Lavender Aesthetic
         )
         fig_funnel.update_layout(yaxis={'categoryorder':'total descending'}, coloraxis_showscale=False)
         st.plotly_chart(fig_funnel, use_container_width=True)
@@ -74,17 +59,19 @@ with col1:
 with col2:
     st.subheader("💰 Acquisition Channel Return (ROAS)")
     if not df_channel.empty:
+        ch_col = df_channel.columns[0] # Channel name column
+        roas_col = df_channel.columns[1] # ROAS value column
+        
         fig_channel = px.bar(
             df_channel,
-            x='channel',
-            y='roas',
-            text='roas',
-            labels={'roas': 'Return on Ad Spend (ROAS)', 'channel': 'Marketing Channel'},
-            color='roas',
+            x=ch_col,
+            y=roas_col,
+            text=roas_col,
+            labels={roas_col: 'Return on Ad Spend (ROAS)', ch_col: 'Marketing Channel'},
+            color=roas_col,
             color_continuous_scale='Blugrn'
         )
         fig_channel.update_traces(texttemplate='%{text:.2f}x', textposition='outside')
-        # Add break-even line indicator
         fig_channel.add_hline(y=1.0, line_dash="dash", line_color="red", annotation_text="Break-Even (1.0x)")
         st.plotly_chart(fig_channel, use_container_width=True)
 
@@ -93,13 +80,12 @@ col3, col4 = st.columns(2)
 
 with col3:
     st.subheader("🛡️ Growth Experiments (A/B Test Metric Lift)")
-    # Generate explicit statistical hover card metrics
     categories = ['Control (Old Checkout)', 'Variant (One-Page Checkout)']
-    conversions = [7.36, 8.74] # Hardcoded tracking metrics derived from project source data
+    conversions = [7.36, 8.74] # Derived from project source metadata findings
     
     fig_ab = go.Figure([go.Bar(x=categories, y=conversions, marker_color=['#b39ddb', '#7e57c2'])])
     fig_ab.update_traces(texttemplate='%{y}%', textposition='outside')
-    fig_ab.update_layout(yaxis_range=[0,12], yaxis_title="Conversion Rate (%)")
+    fig_ab.update_layout(yaxis_range=[0, 12], yaxis_title="Conversion Rate (%)")
     st.plotly_chart(fig_ab, use_container_width=True)
 
 with col4:
