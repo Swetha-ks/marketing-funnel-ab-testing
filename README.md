@@ -73,3 +73,8 @@ python src/analysis.py        # runs SQL + statistics, writes outputs/
 ## Tech
 
 Python (pandas, NumPy, SciPy, Matplotlib) · SQL (SQLite) · A/B testing · Funnel and channel analytics
+
+# Marketing Funnel & A/B Test Analytics (Python, SQL, Statistics)
+🔗 **Live Project Dashboard:** [Click Here to View Live App](https://marketing-funnel-ab-testing.onrender.com)
+*(Note: Please allow 30–45 seconds for the free cloud server to spin up on the first load).*
+
